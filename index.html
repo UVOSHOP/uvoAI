@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UvoAI Super</title>
+  <style>
+    body {
+      background: #1e3799;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .chatbox {
+      max-width: 800px;
+      margin: 50px auto;
+      background: #f5f6fa;
+      border-radius: 15px;
+      padding: 20px;
+    }
+    .messages {
+      height: 500px;
+      overflow-y: auto;
+      background: #dcdde1;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .user-msg, .bot-msg {
+      max-width: 75%;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 15px;
+      display: inline-block;
+      clear: both;
+    }
+    .user-msg {
+      background: #1e3799;
+      color: white;
+      float: right;
+    }
+    .bot-msg {
+      background: #bdc3c7;
+      color: black;
+      float: left;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+    }
+    button {
+      padding: 10px 15px;
+      background: #1e3799;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbox">
+    <h2 style="color:#1e3799">UvoAI - Versi Super Pintar</h2>
+    <div class="messages" id="chat"></div>
+    <input type="text" id="input" placeholder="Tanyakan apa saja...">
+    <button id="sendBtn" onclick="sendMessage()">Kirim</button>
+  </div>
+  <footer>
+    ©2025 ADITdeveloper - Semua Hak Cipta
+  </footer>
+  <script>
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("sendBtn");
+    let knowledge = {};
+    const files = [
+      'uvoai_knowledge_part_1.json',
+      'uvoai_knowledge_part_2.json',
+      'uvoai_knowledge_part_3.json',
+      'uvoai_knowledge_part_4.json',
+      'uvoai_knowledge_part_5.json'
+    ];
+
+    Promise.all(files.map(file => fetch(file).then(r => r.json())))
+      .then(allData => {
+        allData.forEach(part => Object.assign(knowledge, part));
+        console.log("Data pengetahuan berhasil dimuat.");
+      });
+
+    function normalize(msg) {
+      return msg.toLowerCase().replace(/(.)\1+/g, "$1").trim();
+    }
+
+    function sendMessage() {
+      const raw = input.value.trim();
+      if (!raw) return;
+      const msg = normalize(raw);
+      appendMessage("user", raw);
+      input.value = "";
+
+      if (msg.includes("gambar")) {
+        sendBtn.disabled = true;
+        appendMessage("bot", "Berikut ini adalah gambar yang diminta:");
+        setTimeout(() => {
+          showImage(msg);
+          sendBtn.disabled = false;
+        }, 1000);
+        return;
+      }
+
+      const response = knowledge[msg] || `Saya belum punya informasi lengkap tentang "${raw}", tapi saya akan belajar lagi ya 🤖`;
+      appendMessage("bot", response);
+    }
+
+    function appendMessage(sender, text) {
+      const div = document.createElement("div");
+      div.className = sender === "user" ? "user-msg" : "bot-msg";
+      div.innerText = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function showImage(query) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1080;
+      const ctx = canvas.getContext("2d");
+      if (query.includes("merah")) {
+        ctx.fillStyle = "red";
+        ctx.fillRect(0, 0, 1080, 1080);
+      } else if (query.includes("biru")) {
+        ctx.fillStyle = "blue";
+        ctx.fillRect(0, 0, 1080, 1080);
+      } else if (query.includes("bintang")) {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, 1080, 1080);
+        ctx.fillStyle = "yellow";
+        for (let i = 0; i < 100; i++) {
+          const x = Math.random() * 1080;
+          const y = Math.random() * 1080;
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      } else {
+        for (let x = 0; x < 1080; x += 60) {
+          for (let y = 0; y < 1080; y += 60) {
+            ctx.fillStyle = `rgb(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255})`;
+            ctx.fillRect(x, y, 60, 60);
+          }
+        }
+      }
+      canvas.style.width = "100%";
+      canvas.style.height = "auto";
+      canvas.style.display = "block";
+      canvas.style.margin = "10px 0";
+      chat.appendChild(canvas);
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>
