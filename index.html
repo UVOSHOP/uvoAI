@@ -137,6 +137,7 @@
       canvas.width = 1080;
       canvas.height = 1080;
       const ctx = canvas.getContext("2d");
+
       if (query.includes("merah")) {
         ctx.fillStyle = "red";
         ctx.fillRect(0, 0, 1080, 1080);
@@ -155,13 +156,16 @@
           ctx.fill();
         }
       } else {
-        for (let x = 0; x < 1080; x += 60) {
-          for (let y = 0; y < 1080; y += 60) {
-            ctx.fillStyle = `rgb(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255})`;
-            ctx.fillRect(x, y, 60, 60);
-          }
-        }
+        // fallback: gambar putih dengan teks "Coba lagi"
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, 1080, 1080);
+        ctx.fillStyle = "black";
+        ctx.font = "100px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Coba lagi", 540, 540);
       }
+
       canvas.style.width = "100%";
       canvas.style.height = "auto";
       canvas.style.display = "block";
