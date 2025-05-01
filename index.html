@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UvoAI Super</title>
+  <title>UvoAI Chat</title>
   <style>
     body {
       background: #1e3799;
@@ -68,11 +68,29 @@
       margin-top: 20px;
       color: white;
     }
+    .image-container {
+      margin-top: 10px;
+    }
+    .image-container canvas {
+      max-width: 400px;
+      border: 1px solid #ccc;
+      display: block;
+    }
+    .image-container a {
+      display: inline-block;
+      margin-top: 5px;
+      color: #1e3799;
+      background: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="chatbox">
-    <h2 style="color:#1e3799">UvoAI - Versi Super Pintar</h2>
+    <h2 style="color:#1e3799">UvoAI - Chat</h2>
     <div class="messages" id="chat"></div>
     <input type="text" id="input" placeholder="Tanyakan apa saja...">
     <button id="sendBtn" onclick="sendMessage()">Kirim</button>
@@ -137,6 +155,8 @@
       canvas.width = 1080;
       canvas.height = 1080;
       const ctx = canvas.getContext("2d");
+      const container = document.createElement("div");
+      container.className = "image-container bot-msg";
 
       if (query.includes("merah")) {
         ctx.fillStyle = "red";
@@ -155,8 +175,16 @@
           ctx.arc(x, y, 3, 0, 2 * Math.PI);
           ctx.fill();
         }
+      } else if (/gambar [a-z]/.test(query)) {
+        const char = query.split("gambar ")[1].charAt(0).toUpperCase();
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, 1080, 1080);
+        ctx.fillStyle = "black";
+        ctx.font = "800px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(char, 540, 540);
       } else {
-        // fallback: gambar putih dengan teks "Coba lagi"
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, 1080, 1080);
         ctx.fillStyle = "black";
@@ -166,11 +194,15 @@
         ctx.fillText("Coba lagi", 540, 540);
       }
 
-      canvas.style.width = "100%";
-      canvas.style.height = "auto";
-      canvas.style.display = "block";
-      canvas.style.margin = "10px 0";
-      chat.appendChild(canvas);
+      container.appendChild(canvas);
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = canvas.toDataURL("image/png");
+      downloadLink.download = "gambar.png";
+      downloadLink.innerText = "Download Gambar";
+      container.appendChild(downloadLink);
+
+      chat.appendChild(container);
       chat.scrollTop = chat.scrollHeight;
     }
   </script>
