@@ -98,11 +98,14 @@
   <footer>
     ©2025 ADITdeveloper - Semua Hak Cipta
   </footer>
+
   <script>
     const chat = document.getElementById("chat");
     const input = document.getElementById("input");
     const sendBtn = document.getElementById("sendBtn");
     let knowledge = {};
+
+    // Menggunakan Promise.all untuk memuat file JSON secara paralel
     const files = [
       'uvoai_knowledge_part_1.json',
       'uvoai_knowledge_part_2.json',
@@ -113,9 +116,10 @@
 
     Promise.all(files.map(file => fetch(file).then(r => r.json())))
       .then(allData => {
-        allData.forEach(part => Object.assign(knowledge, part));
+        allData.forEach(part => Object.assign(knowledge, part)); // Gabungkan semua data JSON
         console.log("Data pengetahuan berhasil dimuat.");
-      });
+      })
+      .catch(error => console.error("Terjadi kesalahan saat memuat data:", error));
 
     function normalize(msg) {
       return msg.toLowerCase().replace(/(.)\1+/g, "$1").trim();
@@ -123,7 +127,7 @@
 
     function sendMessage() {
       const raw = input.value.trim();
-      if (!raw) return;
+      if (!raw) return; // Jika input kosong, tidak kirim pesan
       const msg = normalize(raw);
       appendMessage("user", raw);
       input.value = "";
