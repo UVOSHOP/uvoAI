@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HP Performance Test - CPU, GPU, FPS</title>
+    <title>Performance Test with Volumeshader</title>
     <style>
         body {
             margin: 0;
@@ -17,40 +17,6 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
-        #container {
-            width: 100vmin;
-            height: 100vmin;
-            perspective: 1500px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .scene {
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            animation: rotate 5s infinite linear;
-            position: relative;
-        }
-        .cube {
-            width: 50px;
-            height: 50px;
-            background-color: #4caf50;
-            position: absolute;
-            transform-style: preserve-3d;
-            animation: rotateCube 5s infinite linear;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
-
-        @keyframes rotateCube {
-            0% { transform: rotateX(0deg) rotateY(0deg); }
-            100% { transform: rotateX(360deg) rotateY(360deg); }
-        }
-
         #fps, #cpu, #gpu {
             position: absolute;
             top: 20px;
@@ -58,7 +24,6 @@
             z-index: 10;
             color: white;
         }
-
         #fps {
             left: 20px;
         }
@@ -70,6 +35,17 @@
             top: 80px;
             left: 20px;
         }
+
+        /* Style for the 3D Shader container */
+        #shader-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vmin;
+            height: 80vmin;
+            border: 1px solid #fff;
+        }
     </style>
 </head>
 <body>
@@ -77,10 +53,8 @@
     <div id="cpu">CPU: 0%</div>
     <div id="gpu">GPU: 0%</div>
     
-    <div id="container">
-        <div class="scene">
-            <div class="cube"></div>
-        </div>
+    <div id="shader-container">
+        <iframe src="https://cznull.github.io/volumeshader.html" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 
     <script>
