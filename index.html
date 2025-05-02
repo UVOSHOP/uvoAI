@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RTX 3060 Performance Test - 3D House Model</title>
+    <title>RTX 3060 Performance Test - Heavy 3D Objects</title>
     <style>
         body {
             margin: 0;
@@ -18,15 +18,16 @@
         }
         #container {
             perspective: 1500px;
-            width: 80vmin;
-            height: 80vmin;
+            width: 100vmin;
+            height: 100vmin;
             position: relative;
         }
-        #house {
+        .scene {
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            animation: rotate 10s infinite linear;
+            animation: rotate 20s infinite linear;
+            position: relative;
         }
         .side {
             position: absolute;
@@ -34,13 +35,28 @@
             height: 100%;
             background: #ff5722;
             border: 1px solid #333;
+            opacity: 0.7;
         }
-        .front  { transform: rotateY(  0deg) translateZ(50%); }
-        .back   { transform: rotateY(180deg) translateZ(50%); }
-        .left   { transform: rotateY(-90deg) translateZ(50%); }
-        .right  { transform: rotateY( 90deg) translateZ(50%); }
-        .top    { transform: rotateX( 90deg) translateZ(50%); }
-        .bottom { transform: rotateX(-90deg) translateZ(50%); }
+        .side:nth-child(odd) {
+            background-color: #ff8c00;
+        }
+        .side:nth-child(even) {
+            background-color: #4caf50;
+        }
+        .side:nth-child(5) {
+            background-color: #03a9f4;
+        }
+        .side:nth-child(6) {
+            background-color: #9c27b0;
+        }
+
+        .house {
+            position: absolute;
+            width: 20%;
+            height: 20%;
+            background-color: #8bc34a;
+            transform: translateZ(50px);
+        }
 
         /* Animation for 3D rotation */
         @keyframes rotate {
@@ -55,18 +71,90 @@
             font-size: 18px;
             z-index: 10;
         }
+
+        /* Added a simple grid of houses for testing */
+        .grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .house-box {
+            background: rgba(255, 255, 255, 0.5);
+            width: 100%;
+            height: 100%;
+            position: relative;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
     <div id="fps"></div>
     <div id="container">
-        <div id="house">
-            <div class="side front"></div>
-            <div class="side back"></div>
-            <div class="side left"></div>
-            <div class="side right"></div>
-            <div class="side top"></div>
-            <div class="side bottom"></div>
+        <div class="scene">
+            <div class="grid">
+                <!-- Grid of 50 houses -->
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+                <div class="house-box"><div class="house"></div></div>
+            </div>
         </div>
     </div>
 
