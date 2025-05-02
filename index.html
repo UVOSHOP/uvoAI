@@ -1,43 +1,2721 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e5ded8;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <div id="chat-container">
+            <!-- Messages will be displayed here -->
+        </div>
+
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+        </div>
+    </div>
+
+    <script>
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text) {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...');
+
+            // Process AI response after a delay (simulate thinking time)
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response
+        function getAIResponse(userInput) {
+            // Here, you can integrate your logic for AI or search-based responses.
+            let aiResponse = `Saya menerima pesan: "${userInput}"`;
+            
+            // Simulate AI thinking process
+            aiResponse = `AI sedang memproses... saya bisa bantu dengan: ${userInput}`;
+
+            // Add AI response to the chat
+            addToHistory('ai', aiResponse);
+
+            // Re-enable user input after AI responds
+            enableInput();
+        }
+    </script>
+</body>
+</html>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>UvoAI Chatbot Kompleks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
     <style>
-        body { margin: 0; font-family: sans-serif; background: #001f3f; color: white; }
-        #chat { height: 90vh; overflow-y: scroll; padding: 10px; }
-        .user, .ai { margin: 10px; padding: 10px; border-radius: 10px; max-width: 60%; }
-        .user { background: #0074D9; align-self: flex-end; }
-        .ai { background: #AAAAAA; align-self: flex-start; }
-        #input { position: fixed; bottom: 0; width: 100%; display: flex; }
-        #msg { flex: 1; padding: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e5ded8;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+
+        #history-button {
+            background-color: #f8f9fa;
+            color: #007bff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-<div id="chat"></div>
-<div id="input">
-    <input type="text" id="msg" placeholder="Tulis pesan...">
-    <button onclick="send()">Kirim</button>
-</div>
-<script>
-const chat = document.getElementById("chat");
-const msg = document.getElementById("msg");
-function send() {
-    const text = msg.value;
-    if (!text) return;
-    chat.innerHTML += '<div class="user">' + text + '</div>';
-    msg.value = "";
-    fetch("/ask", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({prompt: text})
-    }).then(res => res.json()).then(data => {
-        chat.innerHTML += '<div class="ai">' + data.reply + '</div>';
-        chat.scrollTop = chat.scrollHeight;
-    });
-}
-msg.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
-</script>
+    <div id="chat-wrapper">
+        <div id="chat-container">
+            <!-- Messages will be displayed here -->
+        </div>
+
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+        </div>
+
+        <button id="history-button" onclick="showHistory()">Tampilkan Riwayat Percakapan</button>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text) {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            chatHistory.push({ sender, text }); // Save message to history
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...');
+
+            // Process AI response after a delay (simulate thinking time)
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response
+        function getAIResponse(userInput) {
+            // Here, you can integrate your logic for AI or search-based responses.
+            let aiResponse = `Saya menerima pesan: "${userInput}"`;
+
+            // Simulate AI thinking process
+            aiResponse = `AI sedang memproses... saya bisa bantu dengan: ${userInput}`;
+
+            // Add AI response to the chat
+            addToHistory('ai', aiResponse);
+
+            // Re-enable user input after AI responds
+            enableInput();
+        }
+
+        // Function to show chat history
+        function showHistory() {
+            const historyContainer = document.createElement('div');
+            historyContainer.innerHTML = '<h3>Riwayat Percakapan:</h3>';
+            chatHistory.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', `${message.sender}-message`);
+                messageDiv.innerText = `${message.sender.toUpperCase()}: ${message.text}`;
+                historyContainer.appendChild(messageDiv);
+            });
+            document.body.appendChild(historyContainer);
+        }
+    </script>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e5ded8;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+
+        #history-button {
+            background-color: #f8f9fa;
+            color: #007bff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        #error-message {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <div id="chat-container">
+            <!-- Messages will be displayed here -->
+        </div>
+
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+        </div>
+
+        <button id="history-button" onclick="showHistory()">Tampilkan Riwayat Percakapan</button>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text) {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            chatHistory.push({ sender, text }); // Save message to history
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...');
+
+            // Process AI response after a delay (simulate thinking time)
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response (with search functionality)
+        function getAIResponse(userInput) {
+            // Start by checking if the input contains keywords that trigger specific responses
+            const searchKeywords = ['cuaca', 'berita', 'games', 'tutorial'];
+
+            // Check for keywords in the user input
+            const foundKeyword = searchKeywords.find(keyword => userInput.toLowerCase().includes(keyword));
+
+            if (foundKeyword) {
+                let aiResponse = `AI sedang mencari informasi tentang ${foundKeyword}...`;
+                addToHistory('ai', aiResponse);
+
+                // Simulate a web search or API call to fetch data
+                setTimeout(() => {
+                    let responseData = `Hasil pencarian untuk ${foundKeyword}: [Informasi yang relevan ditemukan dari web.]`;
+                    addToHistory('ai', responseData);
+                    enableInput(); // Enable input after response
+                }, 3000);
+            } else {
+                // If no keyword is found, provide a fallback response
+                let fallbackResponse = 'Maaf, saya tidak dapat menemukan informasi yang relevan.';
+                addToHistory('ai', fallbackResponse);
+                enableInput();
+            }
+        }
+
+        // Function to show chat history
+        function showHistory() {
+            const historyContainer = document.createElement('div');
+            historyContainer.innerHTML = '<h3>Riwayat Percakapan:</h3>';
+            chatHistory.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', `${message.sender}-message`);
+                messageDiv.innerText = `${message.sender.toUpperCase()}: ${message.text}`;
+                historyContainer.appendChild(messageDiv);
+            });
+            document.body.appendChild(historyContainer);
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+
+        #error-message {
+            color: red;
+            font-style: italic;
+        }
+
+        .sentiment-positive {
+            color: green;
+        }
+
+        .sentiment-negative {
+            color: red;
+        }
+
+        .sentiment-neutral {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <div id="chat-container">
+            <!-- Messages will be displayed here -->
+        </div>
+
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text, sentiment = '') {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            if (sentiment) {
+                messageContainer.classList.add(sentiment); // Add sentiment class (positive/negative/neutral)
+            }
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            chatHistory.push({ sender, text }); // Save message to history
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...', 'loading');
+
+            // Process AI response after a delay (simulate thinking time)
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response (with sentiment analysis and advanced search)
+        function getAIResponse(userInput) {
+            // Example of basic sentiment analysis (positive/negative/neutral)
+            let sentiment = 'sentiment-neutral';
+            if (userInput.toLowerCase().includes('senang') || userInput.toLowerCase().includes('baik')) {
+                sentiment = 'sentiment-positive';
+            } else if (userInput.toLowerCase().includes('sedih') || userInput.toLowerCase().includes('buruk')) {
+                sentiment = 'sentiment-negative';
+            }
+
+            // Start by checking if the input contains keywords that trigger specific responses
+            const searchKeywords = ['cuaca', 'berita', 'games', 'tutorial'];
+
+            // Check for keywords in the user input
+            const foundKeyword = searchKeywords.find(keyword => userInput.toLowerCase().includes(keyword));
+
+            if (foundKeyword) {
+                let aiResponse = `AI sedang mencari informasi tentang ${foundKeyword}...`;
+                addToHistory('ai', aiResponse, 'loading');
+
+                // Simulate a web search or API call to fetch data
+                setTimeout(() => {
+                    let responseData = `Hasil pencarian untuk ${foundKeyword}: [Informasi yang relevan ditemukan dari web.]`;
+                    addToHistory('ai', responseData, sentiment);
+                    enableInput(); // Enable input after response
+                }, 3000);
+            } else {
+                // If no keyword is found, provide a fallback response
+                let fallbackResponse = 'Maaf, saya tidak dapat menemukan informasi yang relevan.';
+                addToHistory('ai', fallbackResponse, sentiment);
+                enableInput();
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+
+        #error-message {
+            color: red;
+            font-style: italic;
+        }
+
+        .sentiment-positive {
+            color: green;
+        }
+
+        .sentiment-negative {
+            color: red;
+        }
+
+        .sentiment-neutral {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <div id="chat-container">
+            <!-- Messages will be displayed here -->
+        </div>
+
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text, sentiment = '') {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            if (sentiment) {
+                messageContainer.classList.add(sentiment); // Add sentiment class (positive/negative/neutral)
+            }
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            chatHistory.push({ sender, text }); // Save message to history
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...', 'loading');
+
+            // Process AI response after a delay (simulate thinking time)
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response (with sentiment analysis and advanced search)
+        function getAIResponse(userInput) {
+            // Example of basic sentiment analysis (positive/negative/neutral)
+            let sentiment = 'sentiment-neutral';
+            if (userInput.toLowerCase().includes('senang') || userInput.toLowerCase().includes('baik')) {
+                sentiment = 'sentiment-positive';
+            } else if (userInput.toLowerCase().includes('sedih') || userInput.toLowerCase().includes('buruk')) {
+                sentiment = 'sentiment-negative';
+            }
+
+            // Start by checking if the input contains keywords that trigger specific responses
+            const searchKeywords = ['cuaca', 'berita', 'games', 'tutorial'];
+
+            // Check for keywords in the user input
+            const foundKeyword = searchKeywords.find(keyword => userInput.toLowerCase().includes(keyword));
+
+            if (foundKeyword) {
+                let aiResponse = `AI sedang mencari informasi tentang ${foundKeyword}...`;
+                addToHistory('ai', aiResponse, 'loading');
+
+                // Simulate a web search or API call to fetch data
+                setTimeout(() => {
+                    let responseData = `Hasil pencarian untuk ${foundKeyword}: [Informasi yang relevan ditemukan dari web.]`;
+                    addToHistory('ai', responseData, sentiment);
+                    enableInput(); // Enable input after response
+                }, 3000);
+            } else {
+                // If no keyword is found, provide a fallback response
+                let fallbackResponse = 'Maaf, saya tidak dapat menemukan informasi yang relevan.';
+                addToHistory('ai', fallbackResponse, sentiment);
+                enableInput();
+            }
+        }
+
+        // Function to initiate a web scraping process (Placeholder)
+        function webScrapeData(query) {
+            // Implement the web scraping functionality here
+            // You can use libraries like Puppeteer (for node.js) to scrape web data, or integrate APIs
+            console.log("Web Scraping for:", query);
+            return `Data terkait ${query} telah ditemukan.`;
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+
+        #error-message {
+            color: red;
+            font-style: italic;
+        }
+
+        .sentiment-positive {
+            color: green;
+        }
+
+        .sentiment-negative {
+            color: red;
+        }
+
+        .sentiment-neutral {
+            color: gray;
+        }
+
+        /* Add styles for voice input button */
+        #voice-input-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #voice-input-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <div id="chat-container">
+            <!-- Messages will be displayed here -->
+        </div>
+
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+            <button id="voice-input-btn" onclick="startVoiceInput()">🎙️</button>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text, sentiment = '') {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            if (sentiment) {
+                messageContainer.classList.add(sentiment); // Add sentiment class (positive/negative/neutral)
+            }
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            chatHistory.push({ sender, text }); // Save message to history
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...', 'loading');
+
+            // Process AI response after a delay (simulate thinking time)
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response with NLP and external API integration
+        function getAIResponse(userInput) {
+            // Example of basic sentiment analysis (positive/negative/neutral)
+            let sentiment = 'sentiment-neutral';
+            if (userInput.toLowerCase().includes('senang') || userInput.toLowerCase().includes('baik')) {
+                sentiment = 'sentiment-positive';
+            } else if (userInput.toLowerCase().includes('sedih') || userInput.toLowerCase().includes('buruk')) {
+                sentiment = 'sentiment-negative';
+            }
+
+            // Check for keywords and provide specific responses
+            const searchKeywords = ['cuaca', 'berita', 'games', 'tutorial'];
+            const foundKeyword = searchKeywords.find(keyword => userInput.toLowerCase().includes(keyword));
+
+            if (foundKeyword) {
+                let aiResponse = `AI sedang mencari informasi tentang ${foundKeyword}...`;
+                addToHistory('ai', aiResponse, 'loading');
+
+                // Simulate a web search or API call to fetch data
+                setTimeout(() => {
+                    let responseData = `Hasil pencarian untuk ${foundKeyword}: [Informasi yang relevan ditemukan dari web.]`;
+                    addToHistory('ai', responseData, sentiment);
+                    enableInput(); // Enable input after response
+                }, 3000);
+            } else {
+                let fallbackResponse = 'Maaf, saya tidak dapat menemukan informasi yang relevan.';
+                addToHistory('ai', fallbackResponse, sentiment);
+                enableInput();
+            }
+        }
+
+        // Function to initiate voice input (using Web Speech API)
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Voice input tidak didukung pada browser ini.");
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'id-ID';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                addToHistory('ai', 'AI sedang mendengarkan...', 'loading');
+            };
+
+            recognition.onresult = function(event) {
+                const userInput = event.results[0][0].transcript;
+                addToHistory('user', userInput);
+                handleUserInput(userInput);
+            };
+
+            recognition.onerror = function(event) {
+                addToHistory('ai', 'Terjadi kesalahan saat mendengarkan. Coba lagi.', 'sentiment-negative');
+            };
+
+            recognition.onend = function() {
+                enableInput();
+            };
+
+            recognition.start();
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+
+        #error-message {
+            color: red;
+            font-style: italic;
+        }
+
+        .sentiment-positive {
+            color: green;
+        }
+
+        .sentiment-negative {
+            color: red;
+        }
+
+        .sentiment-neutral {
+            color: gray;
+        }
+
+        #voice-input-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #voice-input-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <div id="chat-container"></div>
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+            <button id="voice-input-btn" onclick="startVoiceInput()">🎙️</button>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text, sentiment = '') {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            if (sentiment) {
+                messageContainer.classList.add(sentiment); // Add sentiment class (positive/negative/neutral)
+            }
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            chatHistory.push({ sender, text });
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...', 'loading');
+
+            // Process AI response after a delay
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response (without API, using local logic)
+        function getAIResponse(userInput) {
+            // Example of internal translation without using API
+            const translations = {
+                'cuaca': 'Hasil pencarian cuaca hari ini: Cerah.',
+                'berita': 'Berita terkini: Pembukaan acara besar di kota.',
+                'games': 'Game yang populer saat ini: Mobile Legends, Free Fire.',
+                'tutorial': 'Tutorial untuk membuat website: Gunakan HTML, CSS, dan JavaScript.'
+            };
+
+            // Try to find a match in our local translations
+            let aiResponse = translations[userInput.toLowerCase()];
+            
+            // Fallback if no match is found
+            if (!aiResponse) {
+                aiResponse = 'Maaf, saya tidak dapat menemukan informasi yang relevan.';
+            }
+
+            // Check sentiment based on simple keywords
+            let sentiment = 'sentiment-neutral';
+            if (userInput.toLowerCase().includes('senang') || userInput.toLowerCase().includes('baik')) {
+                sentiment = 'sentiment-positive';
+            } else if (userInput.toLowerCase().includes('sedih') || userInput.toLowerCase().includes('buruk')) {
+                sentiment = 'sentiment-negative';
+            }
+
+            // Add AI response to chat
+            addToHistory('ai', aiResponse, sentiment);
+            enableInput(); // Enable input after response
+        }
+
+        // Function to initiate voice input (using Web Speech API)
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Voice input tidak didukung pada browser ini.");
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'id-ID';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                addToHistory('ai', 'AI sedang mendengarkan...', 'loading');
+            };
+
+            recognition.onresult = function(event) {
+                const userInput = event.results[0][0].transcript;
+                addToHistory('user', userInput);
+                handleUserInput(userInput);
+            };
+
+            recognition.onerror = function(event) {
+                addToHistory('ai', 'Terjadi kesalahan saat mendengarkan. Coba lagi.', 'sentiment-negative');
+            };
+
+            recognition.onend = function() {
+                enableInput();
+            };
+
+            recognition.start();
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UvoAI - Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chat-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 80vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .ai-message {
+            background-color: #e0e0e0;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #input-wrapper {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #user-input:disabled {
+            background-color: #dcdcdc;
+        }
+
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+
+        #error-message {
+            color: red;
+            font-style: italic;
+        }
+
+        .sentiment-positive {
+            color: green;
+        }
+
+        .sentiment-negative {
+            color: red;
+        }
+
+        .sentiment-neutral {
+            color: gray;
+        }
+
+        #voice-input-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #voice-input-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-wrapper">
+        <div id="chat-container"></div>
+        <div id="input-wrapper">
+            <input type="text" id="user-input" placeholder="Ketik pesan..." onkeydown="checkEnter(event)">
+            <button id="voice-input-btn" onclick="startVoiceInput()">🎙️</button>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+
+        // Function to disable user input (to prevent spamming)
+        function disableInput() {
+            document.getElementById('user-input').disabled = true;
+        }
+
+        // Function to enable user input again
+        function enableInput() {
+            document.getElementById('user-input').disabled = false;
+        }
+
+        // Function to add messages to chat history
+        function addToHistory(sender, text, sentiment = '') {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', `${sender}-message`);
+            if (sentiment) {
+                messageContainer.classList.add(sentiment); // Add sentiment class (positive/negative/neutral)
+            }
+            messageContainer.innerText = text;
+            document.getElementById('chat-container').appendChild(messageContainer);
+            chatHistory.push({ sender, text });
+            scrollToBottom();
+        }
+
+        // Function to scroll chat container to bottom
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Function to handle user input
+        function handleUserInput() {
+            const userInput = document.getElementById('user-input').value.trim();
+            if (userInput === '') return;
+
+            // Add user message to chat
+            addToHistory('user', userInput);
+            disableInput(); // Disable input while AI is responding
+
+            // Show loading message
+            addToHistory('ai', 'AI sedang mencari jawabannya...', 'loading');
+
+            // Process AI response after a delay
+            setTimeout(() => {
+                getAIResponse(userInput);
+            }, 2000);
+        }
+
+        // Function to handle Enter key press
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleUserInput();
+            }
+        }
+
+        // Function to simulate AI response (without API, using local logic)
+        function getAIResponse(userInput) {
+            // Example of internal translation without using API
+            const translations = {
+                'cuaca': 'Hasil pencarian cuaca hari ini: Cerah.',
+                'berita': 'Berita terkini: Pembukaan acara besar di kota.',
+                'games': 'Game yang populer saat ini: Mobile Legends, Free Fire.',
+                'tutorial': 'Tutorial untuk membuat website: Gunakan HTML, CSS, dan JavaScript.'
+            };
+
+            // Try to find a match in our local translations
+            let aiResponse = translations[userInput.toLowerCase()];
+            
+            // Fallback if no match is found
+            if (!aiResponse) {
+                aiResponse = 'Maaf, saya tidak dapat menemukan informasi yang relevan.';
+            }
+
+            // Check sentiment based on simple keywords
+            let sentiment = 'sentiment-neutral';
+            if (userInput.toLowerCase().includes('senang') || userInput.toLowerCase().includes('baik')) {
+                sentiment = 'sentiment-positive';
+            } else if (userInput.toLowerCase().includes('sedih') || userInput.toLowerCase().includes('buruk')) {
+                sentiment = 'sentiment-negative';
+            }
+
+            // Add AI response to chat
+            addToHistory('ai', aiResponse, sentiment);
+            enableInput(); // Enable input after response
+        }
+
+        // Function to initiate voice input (using Web Speech API)
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Voice input tidak didukung pada browser ini.");
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'id-ID';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                addToHistory('ai', 'AI sedang mendengarkan...', 'loading');
+            };
+
+            recognition.onresult = function(event) {
+                const userInput = event.results[0][0].transcript;
+                addToHistory('user', userInput);
+                handleUserInput(userInput);
+            };
+
+            recognition.onerror = function(event) {
+                addToHistory('ai', 'Terjadi kesalahan saat mendengarkan. Coba lagi.', 'sentiment-negative');
+            };
+
+            recognition.onend = function() {
+                enableInput();
+            };
+
+            recognition.start();
+        }
+    </script>
+</body>
+</html>
+<script>
+    let isProcessing = false; // This flag controls whether the AI is still processing
+
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        const userInput = inputField.value.trim();
+
+        // Prevent sending empty messages
+        if (userInput === '') {
+            return;
+        }
+
+        // Display user message
+        appendMessage(userInput, 'user');
+
+        // Clear the input field
+        inputField.value = '';
+
+        // Disable input while AI is processing
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // AI message simulation
+        setTimeout(() => {
+            getAIResponse(userInput);
+        }, 1500); // Simulate AI thinking delay
+    }
+
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Scroll to the bottom to show the latest message
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    function getAIResponse(userInput) {
+        // Here you would integrate your complex AI processing system
+        let aiResponse = "AI response to: " + userInput;
+
+        // Simulate different responses for demonstration purposes
+        if (userInput.toLowerCase().includes("hello")) {
+            aiResponse = "Hello! How can I assist you today?";
+        } else if (userInput.toLowerCase().includes("how are you")) {
+            aiResponse = "I'm doing great! Thanks for asking.";
+        } else {
+            aiResponse = "Sorry, I didn't quite get that.";
+        }
+
+        // Display AI response
+        appendMessage(aiResponse, 'ai');
+
+        // Enable input again after AI response
+        isProcessing = false;
+        document.getElementById('user-input').disabled = false;
+    }
+
+    // Handle Enter key press
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+<script>
+    let isProcessing = false; // This flag controls whether the AI is still processing
+    let context = []; // Stores the conversation history for context awareness
+
+    // Function to handle user input
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        const userInput = inputField.value.trim();
+
+        // Prevent sending empty messages
+        if (userInput === '') {
+            return;
+        }
+
+        // Display user message
+        appendMessage(userInput, 'user');
+
+        // Clear the input field
+        inputField.value = '';
+
+        // Disable input while AI is processing
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // Store user input in context
+        context.push({ sender: 'user', message: userInput });
+
+        // AI message simulation with delay to simulate thinking
+        setTimeout(() => {
+            getAIResponse(userInput);
+        }, 1500); // Simulate AI thinking delay
+    }
+
+    // Function to append messages to the chat window
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Scroll to the bottom to show the latest message
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    // Function to generate AI response based on user input and context
+    function getAIResponse(userInput) {
+        // Here we simulate different AI responses based on the context
+        let aiResponse = "";
+
+        // Basic conversation understanding with context
+        if (context.length === 1) {
+            aiResponse = "Hello! How can I assist you today?";
+        } else if (userInput.toLowerCase().includes("how are you")) {
+            aiResponse = "I'm doing great! Thanks for asking.";
+        } else if (userInput.toLowerCase().includes("what's your name")) {
+            aiResponse = "I'm UvoAI, your personal assistant!";
+        } else if (userInput.toLowerCase().includes("tell me a joke")) {
+            aiResponse = "Why don't skeletons fight each other? They don't have the guts!";
+        } else {
+            aiResponse = generateContextualResponse(userInput);
+        }
+
+        // Store AI's response in context
+        context.push({ sender: 'ai', message: aiResponse });
+
+        // Display AI response
+        appendMessage(aiResponse, 'ai');
+
+        // Enable input again after AI response
+        isProcessing = false;
+        document.getElementById('user-input').disabled = false;
+    }
+
+    // Function to generate contextual AI response based on conversation history
+    function generateContextualResponse(userInput) {
+        let response = "Sorry, I didn't quite get that.";
+
+        // If context exists, process it
+        if (context.length > 1) {
+            // For demonstration: AI will reference the previous user's message
+            const lastUserMessage = context[context.length - 2].message;
+
+            response = `Based on what you said earlier, '${lastUserMessage}', here's my response: Try asking me something more specific.`;
+        }
+
+        return response;
+    }
+
+    // Handle Enter key press
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+<script>
+    let isProcessing = false; // This flag controls whether the AI is still processing
+    let context = []; // Stores the conversation history for context awareness
+
+    // Function to handle user input
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        let userInput = inputField.value.trim();
+
+        // Prevent sending empty messages
+        if (userInput === '') {
+            return;
+        }
+
+        // Limit message length for simplicity
+        if (userInput.length > 300) {
+            appendMessage("Your message is too long. Please keep it under 300 characters.", 'ai');
+            return;
+        }
+
+        // Display user message
+        appendMessage(userInput, 'user');
+
+        // Clear the input field
+        inputField.value = '';
+
+        // Disable input while AI is processing
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // Store user input in context
+        context.push({ sender: 'user', message: userInput });
+
+        // Provide feedback while AI is processing
+        appendMessage("I'm thinking...", 'ai');
+
+        // Simulate AI response after a delay to mimic real-time thinking
+        setTimeout(() => {
+            getAIResponse(userInput);
+        }, 2000); // Simulate a 2-second processing time
+    }
+
+    // Function to append messages to the chat window
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Scroll to the bottom to show the latest message
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    // Function to generate AI response based on user input and context
+    function getAIResponse(userInput) {
+        let aiResponse = "";
+
+        // Basic conversation understanding with context
+        if (context.length === 1) {
+            aiResponse = "Hello! How can I assist you today?";
+        } else if (userInput.toLowerCase().includes("how are you")) {
+            aiResponse = "I'm doing great! Thanks for asking.";
+        } else if (userInput.toLowerCase().includes("what's your name")) {
+            aiResponse = "I'm UvoAI, your personal assistant!";
+        } else if (userInput.toLowerCase().includes("tell me a joke")) {
+            aiResponse = "Why don't skeletons fight each other? They don't have the guts!";
+        } else if (userInput.toLowerCase().includes("help")) {
+            aiResponse = "I'm here to help! Please ask me anything.";
+        } else {
+            aiResponse = generateContextualResponse(userInput);
+        }
+
+        // Store AI's response in context
+        context.push({ sender: 'ai', message: aiResponse });
+
+        // Display AI response
+        appendMessage(aiResponse, 'ai');
+
+        // Enable input again after AI response
+        isProcessing = false;
+        document.getElementById('user-input').disabled = false;
+    }
+
+    // Function to generate contextual AI response based on conversation history
+    function generateContextualResponse(userInput) {
+        let response = "Sorry, I didn't quite get that.";
+
+        // If context exists, process it
+        if (context.length > 1) {
+            // For demonstration: AI will reference the previous user's message
+            const lastUserMessage = context[context.length - 2].message;
+
+            response = `Based on what you said earlier, '${lastUserMessage}', here's my response: Try asking me something more specific.`;
+        }
+
+        return response;
+    }
+
+    // Handle Enter key press to submit message
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+<script>
+    let isProcessing = false; // This flag controls whether the AI is still processing
+    let context = []; // Stores the conversation history for context awareness
+    let userName = ''; // Stores the user's name for personalization
+
+    // Function to handle user input
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        let userInput = inputField.value.trim();
+
+        // Prevent sending empty messages
+        if (userInput === '') {
+            return;
+        }
+
+        // Limit message length for simplicity
+        if (userInput.length > 300) {
+            appendMessage("Your message is too long. Please keep it under 300 characters.", 'ai');
+            return;
+        }
+
+        // Display user message
+        appendMessage(userInput, 'user');
+
+        // Clear the input field
+        inputField.value = '';
+
+        // Disable input while AI is processing
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // Store user input in context
+        context.push({ sender: 'user', message: userInput });
+
+        // Provide feedback while AI is processing
+        appendMessage("I'm thinking...", 'ai');
+
+        // Simulate AI response after a delay to mimic real-time thinking
+        setTimeout(() => {
+            getAIResponse(userInput);
+        }, 2000); // Simulate a 2-second processing time
+    }
+
+    // Function to append messages to the chat window
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Scroll to the bottom to show the latest message
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    // Function to generate AI response based on user input and context
+    function getAIResponse(userInput) {
+        let aiResponse = "";
+
+        // Check if the user has provided their name
+        if (userName === '') {
+            aiResponse = "Hi there! What’s your name?";
+        } else {
+            // Sentiment analysis and response generation
+            const sentiment = analyzeSentiment(userInput);
+            aiResponse = generateResponseBasedOnSentiment(sentiment);
+        }
+
+        // Store AI's response in context
+        context.push({ sender: 'ai', message: aiResponse });
+
+        // Display AI response
+        appendMessage(aiResponse, 'ai');
+
+        // Enable input again after AI response
+        isProcessing = false;
+        document.getElementById('user-input').disabled = false;
+    }
+
+    // Function to analyze the sentiment of the user's message
+    function analyzeSentiment(userInput) {
+        let sentiment = 'neutral'; // Default sentiment
+
+        // Simple sentiment analysis (You can expand this with real NLP libraries)
+        if (userInput.toLowerCase().includes('happy') || userInput.toLowerCase().includes('good')) {
+            sentiment = 'positive';
+        } else if (userInput.toLowerCase().includes('sad') || userInput.toLowerCase().includes('angry')) {
+            sentiment = 'negative';
+        }
+
+        return sentiment;
+    }
+
+    // Function to generate a response based on sentiment
+    function generateResponseBasedOnSentiment(sentiment) {
+        let response = "";
+
+        switch (sentiment) {
+            case 'positive':
+                response = "I’m glad to hear that you're feeling good! 😊 How can I assist you further?";
+                break;
+            case 'negative':
+                response = "Oh no, I’m sorry to hear that. 😔 Is there anything I can do to help?";
+                break;
+            case 'neutral':
+            default:
+                response = "Thanks for sharing! What else can I help you with today?";
+                break;
+        }
+
+        return response;
+    }
+
+    // Handle Enter key press to submit message
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Function to handle setting the user's name
+    function setUserName(name) {
+        userName = name;
+        appendMessage(`Got it! I’ll remember your name, ${name}. 😊`, 'ai');
+    }
+
+    // Function to prompt for the user's name
+    function askForName() {
+        appendMessage("I don’t know your name yet. What should I call you?", 'ai');
+    }
+
+    // Function to handle incoming input for user’s name
+    function handleUserNameInput(userInput) {
+        if (userInput.trim() !== '') {
+            setUserName(userInput.trim());
+        } else {
+            appendMessage("I’m sorry, I didn’t catch that. Please tell me your name.", 'ai');
+        }
+    }
+</script>
+<script>
+    let isProcessing = false; // Mengatur status apakah AI sedang memproses atau tidak
+    let context = []; // Menyimpan riwayat percakapan untuk pemahaman konteks
+    let userName = ''; // Menyimpan nama pengguna untuk personalisasi
+
+    // Fungsi untuk menangani input dari pengguna
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        let userInput = inputField.value.trim();
+
+        // Mencegah pengiriman pesan kosong
+        if (userInput === '') {
+            return;
+        }
+
+        // Batasi panjang pesan agar tidak terlalu panjang
+        if (userInput.length > 300) {
+            appendMessage("Pesanmu terlalu panjang, harap kurangi menjadi kurang dari 300 karakter.", 'ai');
+            return;
+        }
+
+        // Menampilkan pesan pengguna
+        appendMessage(userInput, 'user');
+
+        // Membersihkan kolom input
+        inputField.value = '';
+
+        // Nonaktifkan input selama AI sedang memproses
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // Menyimpan input pengguna dalam konteks
+        context.push({ sender: 'user', message: userInput });
+
+        // Memberikan umpan balik bahwa AI sedang memproses
+        appendMessage("Saya sedang berpikir...", 'ai');
+
+        // Simulasikan respons AI setelah beberapa detik untuk meniru waktu pemrosesan nyata
+        setTimeout(() => {
+            getAIResponse(userInput);
+        }, 2000); // Simulasikan pemrosesan selama 2 detik
+    }
+
+    // Fungsi untuk menambahkan pesan ke jendela chat
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Menggulir ke bawah agar pesan terbaru selalu terlihat
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    // Fungsi untuk menghasilkan respons AI berdasarkan input pengguna dan konteks percakapan
+    function getAIResponse(userInput) {
+        let aiResponse = "";
+
+        // Memeriksa apakah pengguna sudah memberikan nama
+        if (userName === '') {
+            aiResponse = "Halo! Apa nama kamu?";
+        } else {
+            // Analisis sentimen dan pembuatan respons berdasarkan sentimen
+            const sentiment = analyzeSentiment(userInput);
+            aiResponse = generateResponseBasedOnSentiment(sentiment);
+        }
+
+        // Menyimpan respons AI dalam konteks
+        context.push({ sender: 'ai', message: aiResponse });
+
+        // Menampilkan respons AI
+        appendMessage(aiResponse, 'ai');
+
+        // Mengaktifkan kembali input setelah respons AI
+        isProcessing = false;
+        document.getElementById('user-input').disabled = false;
+    }
+
+    // Fungsi untuk menganalisis sentimen dari pesan pengguna
+    function analyzeSentiment(userInput) {
+        let sentiment = 'neutral'; // Sentimen default
+
+        // Analisis sentimen sederhana (Anda bisa menambahkannya dengan pustaka NLP lebih lanjut)
+        if (userInput.toLowerCase().includes('senang') || userInput.toLowerCase().includes('baik')) {
+            sentiment = 'positive';
+        } else if (userInput.toLowerCase().includes('sedih') || userInput.toLowerCase().includes('marah')) {
+            sentiment = 'negative';
+        }
+
+        return sentiment;
+    }
+
+    // Fungsi untuk menghasilkan respons berdasarkan sentimen
+    function generateResponseBasedOnSentiment(sentiment) {
+        let response = "";
+
+        switch (sentiment) {
+            case 'positive':
+                response = "Saya senang mendengarnya! 😊 Bagaimana saya bisa membantu lebih lanjut?";
+                break;
+            case 'negative':
+                response = "Oh, saya sangat menyesal mendengarnya. 😔 Apakah ada yang bisa saya bantu?";
+                break;
+            case 'neutral':
+            default:
+                response = "Terima kasih sudah berbagi! Ada hal lain yang bisa saya bantu?";
+                break;
+        }
+
+        return response;
+    }
+
+    // Fungsi untuk menangani tekan tombol Enter untuk mengirim pesan
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Fungsi untuk menyetel nama pengguna
+    function setUserName(name) {
+        userName = name;
+        appendMessage(`Got it! Saya akan ingat nama kamu, ${name}. 😊`, 'ai');
+    }
+
+    // Fungsi untuk meminta nama pengguna
+    function askForName() {
+        appendMessage("Saya belum tahu nama kamu. Siapa namamu?", 'ai');
+    }
+
+    // Fungsi untuk menangani input nama pengguna
+    function handleUserNameInput(userInput) {
+        if (userInput.trim() !== '') {
+            setUserName(userInput.trim());
+        } else {
+            appendMessage("Maaf, saya tidak menangkap itu. Tolong beri tahu nama kamu.", 'ai');
+        }
+    }
+</script>
+<script>
+    // Penyimpanan data percakapan untuk meningkatkan pemahaman AI
+    let conversationData = {
+        userInputs: [],
+        aiResponses: []
+    };
+
+    // Fungsi untuk menambahkan input dan respons ke dalam data percakapan
+    function storeConversation(userInput, aiResponse) {
+        conversationData.userInputs.push(userInput);
+        conversationData.aiResponses.push(aiResponse);
+    }
+
+    // Fungsi untuk meningkatkan kualitas respons AI berdasarkan percakapan sebelumnya
+    function improveAIResponse(userInput) {
+        let aiResponse = generateResponseBasedOnContext(userInput);
+        storeConversation(userInput, aiResponse); // Menyimpan percakapan
+
+        return aiResponse;
+    }
+
+    // Fungsi untuk menghasilkan respons AI berdasarkan konteks percakapan sebelumnya
+    function generateResponseBasedOnContext(userInput) {
+        let contextResponse = "";
+
+        // Menentukan apakah ada pola dalam percakapan sebelumnya
+        const previousInput = conversationData.userInputs[conversationData.userInputs.length - 1];
+        const previousResponse = conversationData.aiResponses[conversationData.aiResponses.length - 1];
+
+        // Menggunakan pola-pola yang ditemukan dalam percakapan sebelumnya
+        if (previousInput && previousResponse) {
+            // Menyesuaikan respons dengan konteks sebelumnya
+            contextResponse = `Saya ingat sebelumnya kamu berkata: "${previousInput}". Berbicara tentang itu, apakah kamu ingin tahu lebih banyak?`;
+        } else {
+            // Respons default jika belum ada percakapan sebelumnya
+            contextResponse = "Saya masih belajar! Ada hal lain yang bisa saya bantu?";
+        }
+
+        return contextResponse;
+    }
+
+    // Fungsi untuk menangani input dan meningkatkan respons AI
+    function handleUserInput(userInput) {
+        const aiResponse = improveAIResponse(userInput);
+        appendMessage(aiResponse, 'ai');
+    }
+
+    // Fungsi untuk menangani input pengguna dan memproses respons
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        let userInput = inputField.value.trim();
+
+        // Mencegah pengiriman pesan kosong
+        if (userInput === '') {
+            return;
+        }
+
+        // Menampilkan pesan pengguna
+        appendMessage(userInput, 'user');
+
+        // Membersihkan kolom input
+        inputField.value = '';
+
+        // Nonaktifkan input selama AI sedang memproses
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // Memproses percakapan dan memberikan respons AI
+        handleUserInput(userInput);
+    }
+
+    // Fungsi untuk menambahkan pesan ke jendela chat
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Menggulir ke bawah agar pesan terbaru selalu terlihat
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    // Event listener untuk mengirim pesan saat menekan tombol Enter
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+<script>
+    // Sentiment analysis sederhana untuk menentukan apakah pesan pengguna positif, negatif, atau netral
+    function analyzeSentiment(userInput) {
+        // Daftar kata-kata positif dan negatif untuk analisis sentimen
+        const positiveWords = ['baik', 'senang', 'terima kasih', 'positif', 'ceria', 'luar biasa'];
+        const negativeWords = ['buruk', 'sedih', 'kecewa', 'marah', 'negatif', 'kesal'];
+
+        let sentiment = 'neutral'; // Default sentiment adalah netral
+
+        // Menghitung jumlah kata positif dan negatif dalam input
+        let positiveCount = 0;
+        let negativeCount = 0;
+
+        // Mengubah input menjadi array kata-kata
+        const words = userInput.toLowerCase().split(/\s+/);
+
+        words.forEach(word => {
+            if (positiveWords.includes(word)) {
+                positiveCount++;
+            } else if (negativeWords.includes(word)) {
+                negativeCount++;
+            }
+        });
+
+        // Menentukan sentimen berdasarkan jumlah kata positif dan negatif
+        if (positiveCount > negativeCount) {
+            sentiment = 'positive';
+        } else if (negativeCount > positiveCount) {
+            sentiment = 'negative';
+        }
+
+        return sentiment;
+    }
+
+    // Fungsi untuk mengirimkan pesan
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        let userInput = inputField.value.trim();
+
+        // Mencegah pengiriman pesan kosong
+        if (userInput === '') {
+            return;
+        }
+
+        // Menampilkan pesan pengguna
+        appendMessage(userInput, 'user');
+
+        // Membersihkan kolom input
+        inputField.value = '';
+
+        // Nonaktifkan input selama AI sedang memproses
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // Melakukan analisis sentimen terhadap input pengguna
+        const sentiment = analyzeSentiment(userInput);
+
+        // Menghasilkan respons AI berdasarkan sentimen
+        let aiResponse = generateAIResponseBasedOnSentiment(sentiment);
+
+        // Menampilkan respons AI setelah analisis sentimen
+        appendMessage(aiResponse, 'ai');
+
+        // Mengaktifkan kembali kolom input setelah AI selesai memproses
+        isProcessing = false;
+        inputField.disabled = false;
+    }
+
+    // Fungsi untuk menghasilkan respons AI berdasarkan sentimen
+    function generateAIResponseBasedOnSentiment(sentiment) {
+        let response = "";
+
+        switch (sentiment) {
+            case 'positive':
+                response = "Senang mendengar itu! 😊 Ada yang bisa saya bantu lagi?";
+                break;
+            case 'negative':
+                response = "Saya bisa merasakan ketidaknyamananmu. Ada yang bisa saya bantu untuk membuatmu merasa lebih baik?";
+                break;
+            case 'neutral':
+            default:
+                response = "Terima kasih telah berbicara dengan saya. Apa yang bisa saya bantu?";
+                break;
+        }
+
+        return response;
+    }
+
+    // Fungsi untuk menambahkan pesan ke jendela chat
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Menggulir ke bawah agar pesan terbaru selalu terlihat
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    // Event listener untuk mengirim pesan saat menekan tombol Enter
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+<script>
+    // Fitur untuk mendeteksi dan memberikan rekomendasi berdasarkan kebutuhan pengguna
+    function detectUserNeed(userInput) {
+        // Daftar kata-kata kunci yang menunjukkan kebutuhan atau permintaan dari pengguna
+        const needKeywords = {
+            'bantuan': 'Sepertinya Anda membutuhkan bantuan. Apa yang bisa saya bantu?',
+            'harga': 'Mencari informasi harga? Saya bisa membantu mencarikannya untuk Anda!',
+            'tutorial': 'Apakah Anda membutuhkan tutorial? Saya bisa menunjukkan langkah-langkah yang tepat.',
+            'layanan': 'Ada layanan apa yang Anda cari? Saya akan membantu mencarikannya!',
+            'informasi': 'Anda mencari informasi lebih lanjut? Saya siap memberikan informasi yang Anda perlukan.'
+        };
+
+        let response = "Saya tidak sepenuhnya memahami permintaan Anda. Bisakah Anda memberi tahu lebih banyak?";
+
+        // Periksa apakah input pengguna mengandung kata kunci yang menunjukkan kebutuhan tertentu
+        for (let keyword in needKeywords) {
+            if (userInput.toLowerCase().includes(keyword)) {
+                response = needKeywords[keyword];
+                break;
+            }
+        }
+
+        return response;
+    }
+
+    // Fungsi untuk mengirimkan pesan dari pengguna
+    function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        let userInput = inputField.value.trim();
+
+        // Mencegah pengiriman pesan kosong
+        if (userInput === '') {
+            return;
+        }
+
+        // Menampilkan pesan pengguna
+        appendMessage(userInput, 'user');
+
+        // Membersihkan kolom input
+        inputField.value = '';
+
+        // Nonaktifkan input selama AI sedang memproses
+        isProcessing = true;
+        inputField.disabled = true;
+
+        // Melakukan penelusuran kebutuhan berdasarkan input pengguna
+        const needResponse = detectUserNeed(userInput);
+
+        // Menampilkan respons AI berdasarkan kebutuhan yang terdeteksi
+        appendMessage(needResponse, 'ai');
+
+        // Mengaktifkan kembali kolom input setelah AI selesai memproses
+        isProcessing = false;
+        inputField.disabled = false;
+    }
+
+    // Fungsi untuk menambahkan pesan ke jendela chat
+    function appendMessage(message, sender) {
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWrapper.appendChild(messageDiv);
+
+        // Menggulir ke bawah agar pesan terbaru selalu terlihat
+        chatWrapper.scrollTop = chatWrapper.scrollHeight;
+    }
+
+    // Event listener untuk mengirim pesan saat menekan tombol Enter
+    document.getElementById('user-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+<script>
+// Bagian ke-16: Sistem blokir input saat AI sedang memproses
+let isProcessing = false;
+
+// Blok input saat AI memproses
+function setInputState(state) {
+    const input = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    input.disabled = state;
+    sendBtn.disabled = state;
+    isProcessing = state;
+}
+
+// Fungsi dummy pemrosesan jawaban AI lokal (bisa dikembangkan nanti)
+function processAI(query) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const lowerQuery = query.toLowerCase();
+            if (lowerQuery.includes("siapa kamu")) {
+                resolve("Aku UvoAI, asisten AI lokal kamu 🤖");
+            } else if (lowerQuery.includes("hewan")) {
+                resolve("Berikut 5 hewan: Kucing, Anjing, Gajah, Harimau, Jerapah 🐾");
+            } else if (lowerQuery.match(/[0-9\+\-\*\/\(\)]+/)) {
+                try {
+                    const result = eval(lowerQuery);
+                    resolve("Hasilnya adalah: " + result);
+                } catch (e) {
+                    resolve("Maaf, format hitungannya tidak dipahami 😅");
+                }
+            } else {
+                resolve("Sedang mencari jawaban... Mohon ditunggu.");
+            }
+        }, 2000); // simulasi proses 2 detik
+    });
+}
+
+// Pengiriman otomatis saat tekan Enter
+document.getElementById("user-input").addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && !isProcessing) {
+        e.preventDefault();
+        document.getElementById("send-btn").click();
+    }
+});
+
+// Kirim pesan
+document.getElementById("send-btn").addEventListener("click", async function () {
+    if (isProcessing) return;
+    const input = document.getElementById("user-input");
+    const message = input.value.trim();
+    if (!message) return;
+
+    setInputState(true);
+    addMessageToChat("user", message);
+    input.value = "";
+
+    const aiResponse = await processAI(message);
+    addMessageToChat("ai", aiResponse);
+    setInputState(false);
+});
+
+// Tambahkan pesan ke tampilan
+function addMessageToChat(sender, message) {
+    const chatBody = document.getElementById("chat-body");
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("message", sender === "user" ? "user" : "ai");
+
+    const bubble = document.createElement("div");
+    bubble.classList.add("bubble");
+    bubble.innerText = message;
+
+    msgDiv.appendChild(bubble);
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+</script>
+<script>
+// Bagian ke-17: Simpan dan muat riwayat chat dari localStorage
+
+// Fungsi menyimpan chat ke localStorage
+function saveChatHistory() {
+    const messages = Array.from(document.querySelectorAll(".message")).map(msg => {
+        return {
+            sender: msg.classList.contains("user") ? "user" : "ai",
+            text: msg.innerText
+        };
+    });
+    localStorage.setItem("uvoAI_chat", JSON.stringify(messages));
+}
+
+// Fungsi memuat chat dari localStorage saat halaman dibuka
+function loadChatHistory() {
+    const saved = localStorage.getItem("uvoAI_chat");
+    if (!saved) return;
+    try {
+        const messages = JSON.parse(saved);
+        messages.forEach(msg => addMessageToChat(msg.sender, msg.text));
+    } catch (e) {
+        console.error("Gagal memuat riwayat chat:", e);
+    }
+}
+
+// Modifikasi fungsi addMessageToChat agar selalu simpan riwayat
+const oldAddMessage = addMessageToChat;
+addMessageToChat = function (sender, message) {
+    oldAddMessage(sender, message);
+    saveChatHistory(); // Simpan setiap kali pesan ditambahkan
+};
+
+// Muat riwayat saat halaman dibuka
+window.addEventListener("load", loadChatHistory);
+</script>
+<script>
+// Bagian ke-18: Fungsi hapus chat
+function confirmClearChat() {
+    if (confirm("Yakin ingin menghapus semua riwayat chat?")) {
+        localStorage.removeItem("uvoAI_chat");
+        document.querySelector(".chat-box").innerHTML = "";
+    }
+}
+</script>
+<!-- Bagian ke-19: Fitur Edit Pesan User -->
+<style>
+  .edit-btn {
+    background: none;
+    border: none;
+    color: #007aff;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 8px;
+  }
+  .edit-btn:hover {
+    color: #0051cc;
+  }
+</style>
+
+<script>
+  // Fungsi untuk menambahkan pesan ke chatbox
+  function addMessage(text, sender = "user") {
+    const chatBox = document.getElementById("chat-box");
+    const bubble = document.createElement("div");
+    bubble.className = `bubble ${sender}`;
+
+    if (sender === "user") {
+      bubble.innerHTML = `
+        <span>${text}</span>
+        <button class="edit-btn" onclick="editMessage('${text.replace(/'/g, "\\'")}')">✏️</button>
+      `;
+    } else {
+      bubble.textContent = text;
+    }
+
+    chatBox.appendChild(bubble);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // Fungsi edit: masukkan kembali pesan ke input
+  function editMessage(oldText) {
+    const input = document.getElementById("chat-input");
+    input.value = oldText;
+    input.focus();
+  }
+</script>
+<script>
+  // Deteksi gaya bahasa berdasarkan isi pertanyaan
+  function detectTone(message) {
+    const formalWords = ["tolong", "dapatkah", "apakah", "mohon", "jelaskan"];
+    const informalWords = ["ga", "nggak", "dong", "cuy", "bro", "sih"];
+
+    const lower = message.toLowerCase();
+    let score = 0;
+
+    formalWords.forEach(word => { if (lower.includes(word)) score += 1; });
+    informalWords.forEach(word => { if (lower.includes(word)) score -= 1; });
+
+    return score > 0 ? "formal" : "santai";
+  }
+
+  // Gaya respon AI berdasarkan tone
+  function respondWithTone(message) {
+    const tone = detectTone(message);
+
+    if (tone === "formal") {
+      return "Baik, izinkan saya menjelaskannya secara rinci untuk Anda.";
+    } else {
+      return "Oke, ini dia jawabannya yaa 😄";
+    }
+  }
+
+  // Modifikasi di tempat kamu proses jawaban AI:
+  function processAIResponse(userMessage) {
+    const toneIntro = respondWithTone(userMessage);
+    const fakeAnswer = generateAnswer(userMessage); // fungsi dummy kamu
+    return toneIntro + "\n\n" + fakeAnswer;
+  }
+</script>
+<script>
+  // Fungsi untuk memblokir dan membuka input saat AI merespon
+  function setInputDisabled(disabled) {
+    const inputField = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    inputField.disabled = disabled;
+    sendBtn.disabled = disabled;
+  }
+
+  // Ganti fungsi kirim chat jadi:
+  function sendMessage() {
+    const input = document.getElementById("user-input");
+    const text = input.value.trim();
+    if (text === "") return;
+
+    addMessage(text, "user");
+    input.value = "";
+    setInputDisabled(true); // Blokir input
+
+    setTimeout(() => {
+      const aiResponse = processAIResponse(text);
+      addMessage(aiResponse, "ai");
+      setInputDisabled(false); // Buka input setelah respon
+    }, 1500); // Simulasi AI memproses dalam 1,5 detik
+  }
+
+  // Enter = kirim chat
+  document.getElementById("user-input").addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && !this.disabled) {
+      sendMessage();
+    }
+  });
+
+  // Klik tombol kirim
+  document.getElementById("send-btn").addEventListener("click", function () {
+    if (!this.disabled) {
+      sendMessage();
+    }
+  });
+</script>
+<script>
+  // Menyimpan chat ke localStorage
+  function saveChatHistory() {
+    const chatContainer = document.getElementById("chat-container");
+    const chatItems = chatContainer.querySelectorAll(".chat");
+    const history = [];
+
+    chatItems.forEach((item) => {
+      history.push({
+        role: item.classList.contains("user") ? "user" : "ai",
+        message: item.querySelector(".bubble").textContent
+      });
+    });
+
+    localStorage.setItem("uvoai-chat-history", JSON.stringify(history));
+  }
+
+  // Memuat chat dari localStorage
+  function loadChatHistory() {
+    const history = JSON.parse(localStorage.getItem("uvoai-chat-history"));
+    if (history && Array.isArray(history)) {
+      history.forEach((entry) => {
+        addMessage(entry.message, entry.role);
+      });
+    }
+  }
+
+  // Panggil saat halaman dimuat
+  window.onload = () => {
+    loadChatHistory();
+  };
+
+  // Tambahkan penyimpanan setiap kali menambah chat
+  const originalAddMessage = addMessage;
+  addMessage = function (message, sender) {
+    originalAddMessage(message, sender);
+    saveChatHistory(); // Simpan setelah setiap pesan ditambahkan
+  };
+</script>
