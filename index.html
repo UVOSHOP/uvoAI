@@ -21,22 +21,6 @@
             height: 100vmin;
             position: relative;
         }
-        #start-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 15px 30px;
-            font-size: 20px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        #start-button:hover {
-            background-color: #45a049;
-        }
         #fps {
             position: absolute;
             top: 20px;
@@ -45,12 +29,11 @@
             z-index: 10;
         }
         #scene {
-            display: none;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <button id="start-button">UJI COBA</button>
     <div id="fps"></div>
     <div id="container">
         <div id="scene"></div>
@@ -60,16 +43,9 @@
     <script>
         // Variables for 3D scene
         let scene, camera, renderer, controls;
-        let cube;
         let fpsCounter = 0;
         let fps = 0;
         let lastTime = 0;
-
-        document.getElementById('start-button').onclick = function() {
-            document.getElementById('scene').style.display = 'block';
-            document.getElementById('start-button').style.display = 'none';
-            init(); // Start the 3D scene
-        };
 
         // Initialize the 3D scene with three.js
         function init() {
@@ -137,6 +113,9 @@
             controls.update(); // Enable orbit control updates
             renderer.render(scene, camera);
         }
+
+        // Start the 3D scene
+        init();
     </script>
 </body>
 </html>
