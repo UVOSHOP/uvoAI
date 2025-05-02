@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RTX 3060 Performance Test - 3D Interactive</title>
+    <title>RTX 3060 Performance Test - Heavy 3D Objects</title>
     <style>
         body {
             margin: 0;
@@ -17,10 +17,32 @@
             font-family: Arial, sans-serif;
         }
         #container {
+            perspective: 1500px;
             width: 100vmin;
             height: 100vmin;
             position: relative;
         }
+        .scene {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotate 20s infinite linear;
+            position: relative;
+        }
+
+        .house {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #8bc34a;
+            transform: translateZ(50px);
+        }
+
+        @keyframes rotate {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
         #fps {
             position: absolute;
             top: 20px;
@@ -28,92 +50,53 @@
             font-size: 18px;
             z-index: 10;
         }
-        #scene {
-            display: block;
-        }
     </style>
 </head>
 <body>
     <div id="fps"></div>
     <div id="container">
-        <div id="scene"></div>
+        <div class="scene">
+            <!-- 900 Houses forming a tube shape -->
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        let scene, camera, renderer, controls;
-        let fpsCounter = 0;
+        const scene = document.querySelector('.scene');
+        const numObjects = 900;
+        const radius = 150;
+        const angleIncrement = (2 * Math.PI) / numObjects;
+
+        // Generate the 900 objects arranged in a cylindrical shape
+        for (let i = 0; i < numObjects; i++) {
+            const house = document.createElement('div');
+            house.classList.add('house');
+
+            const angle = i * angleIncrement;
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+
+            house.style.transform = `translateX(${x}px) translateY(0) translateZ(${z}px)`;
+            scene.appendChild(house);
+        }
+
+        // FPS Calculation and Display
+        let frameCount = 0;
         let fps = 0;
         let lastTime = 0;
 
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            document.getElementById('scene').appendChild(renderer.domElement);
-
-            // Create lighting
-            const light = new THREE.PointLight(0xFFFFFF, 1, 1000);
-            light.position.set(100, 100, 100);
-            scene.add(light);
-
-            // Generate 800 objects in a cylindrical shape
-            generateObjects();
-
-            // Set camera position
-            camera.position.z = 300;
-
-            // Add OrbitControls for 3D rotation
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-            // Start the FPS counter
-            requestAnimationFrame(updateFPS);
-            animate();
-        }
-
-        // Generate 800 3D objects in cylindrical shape
-        function generateObjects() {
-            const numObjects = 800;
-            const radius = 150;
-            const angleIncrement = (2 * Math.PI) / numObjects;
-
-            for (let i = 0; i < numObjects; i++) {
-                const geometry = new THREE.BoxGeometry(20, 20, 20);
-                const material = new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff });
-                const cube = new THREE.Mesh(geometry, material);
-
-                const angle = i * angleIncrement;
-                const x = Math.cos(angle) * radius;
-                const z = Math.sin(angle) * radius;
-
-                cube.position.set(x, 0, z);
-                scene.add(cube);
-            }
-        }
-
-        // Update the FPS counter
         function updateFPS(time) {
-            fpsCounter++;
+            frameCount++;
             const deltaTime = time - lastTime;
             if (deltaTime >= 1000) {
-                fps = fpsCounter;
-                fpsCounter = 0;
+                fps = frameCount;
+                frameCount = 0;
                 lastTime = time;
                 document.getElementById('fps').innerText = 'FPS: ' + fps;
             }
             requestAnimationFrame(updateFPS);
         }
 
-        // Animation loop for 3D scene
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update(); // Enable orbit control updates
-            renderer.render(scene, camera);
-        }
-
-        // Start the 3D scene
-        init();
+        requestAnimationFrame(updateFPS);
     </script>
 </body>
 </html>
