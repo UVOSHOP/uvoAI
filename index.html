@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RTX 3060 Performance Test - Heavy 3D Objects</title>
+    <title>RTX 3060 Performance Test - Heavy 3D Objects in Cylinder</title>
     <style>
         body {
             margin: 0;
@@ -72,98 +72,74 @@
             z-index: 10;
         }
 
-        /* Added a simple grid of houses for testing */
-        .grid {
+        #start-button {
             position: absolute;
-            top: 0;
-            left: 0;
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            gap: 10px;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
         }
 
-        .house-box {
-            background: rgba(255, 255, 255, 0.5);
-            width: 100%;
-            height: 100%;
-            position: relative;
-            box-sizing: border-box;
+        #start-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Hide the scene initially */
+        #scene {
+            display: none;
         }
     </style>
 </head>
 <body>
+    <button id="start-button">UJI COBA</button>
     <div id="fps"></div>
     <div id="container">
-        <div class="scene">
-            <div class="grid">
-                <!-- Grid of 50 houses -->
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-                <div class="house-box"><div class="house"></div></div>
-            </div>
+        <div id="scene" class="scene">
+            <!-- Generating 500 3D objects -->
+            <div class="objects"></div>
         </div>
     </div>
 
     <script>
+        // Toggle the start button and start the scene
+        document.getElementById('start-button').onclick = function() {
+            document.getElementById('scene').style.display = 'block';
+            document.getElementById('start-button').style.display = 'none';
+            generateObjects(); // Start generating objects after clicking the button
+        };
+
+        // Generate 500 3D objects in a cylindrical shape
+        function generateObjects() {
+            const scene = document.querySelector('.objects');
+            const numObjects = 500;
+            const radius = 150; // radius of the cylinder
+            const angleIncrement = (2 * Math.PI) / numObjects;
+
+            for (let i = 0; i < numObjects; i++) {
+                const object = document.createElement('div');
+                object.classList.add('house');
+                // Calculate position in a circular layout (tabung)
+                const angle = i * angleIncrement;
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius;
+                object.style.transform = `translate3d(${x}px, 0, ${z}px)`;
+                scene.appendChild(object);
+            }
+
+            startFPSCounter(); // Start FPS counter once objects are generated
+        }
+
+        // FPS Counter
         let frameCount = 0;
         let fps = 0;
         let lastTime = 0;
 
-        // FPS Calculation and Display
         function updateFPS(time) {
             frameCount++;
             const deltaTime = time - lastTime;
@@ -176,7 +152,9 @@
             requestAnimationFrame(updateFPS);
         }
 
-        requestAnimationFrame(updateFPS);
+        function startFPSCounter() {
+            requestAnimationFrame(updateFPS);
+        }
     </script>
 </body>
 </html>
