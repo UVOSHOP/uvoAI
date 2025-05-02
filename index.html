@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RTX 3060 Performance Test - Interactive 3D</title>
+    <title>RTX 3060 Performance Test - 3D Interactive</title>
     <style>
         body {
             margin: 0;
@@ -41,13 +41,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Variables for 3D scene
         let scene, camera, renderer, controls;
         let fpsCounter = 0;
         let fps = 0;
         let lastTime = 0;
 
-        // Initialize the 3D scene with three.js
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -60,7 +58,7 @@
             light.position.set(100, 100, 100);
             scene.add(light);
 
-            // Create objects (500 cubes in a cylindrical shape)
+            // Generate 800 objects in a cylindrical shape
             generateObjects();
 
             // Set camera position
@@ -74,9 +72,9 @@
             animate();
         }
 
-        // Function to generate 500 3D objects in cylindrical shape
+        // Generate 800 3D objects in cylindrical shape
         function generateObjects() {
-            const numObjects = 500;
+            const numObjects = 800;
             const radius = 150;
             const angleIncrement = (2 * Math.PI) / numObjects;
 
@@ -107,7 +105,7 @@
             requestAnimationFrame(updateFPS);
         }
 
-        // Animation function for 3D scene
+        // Animation loop for 3D scene
         function animate() {
             requestAnimationFrame(animate);
             controls.update(); // Enable orbit control updates
