@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>UvoAI Chatbot Kompleks</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; background: #001f3f; color: white; }
+        #chat { height: 90vh; overflow-y: scroll; padding: 10px; }
+        .user, .ai { margin: 10px; padding: 10px; border-radius: 10px; max-width: 60%; }
+        .user { background: #0074D9; align-self: flex-end; }
+        .ai { background: #AAAAAA; align-self: flex-start; }
+        #input { position: fixed; bottom: 0; width: 100%; display: flex; }
+        #msg { flex: 1; padding: 10px; }
+    </style>
+</head>
+<body>
+<div id="chat"></div>
+<div id="input">
+    <input type="text" id="msg" placeholder="Tulis pesan...">
+    <button onclick="send()">Kirim</button>
+</div>
+<script>
+const chat = document.getElementById("chat");
+const msg = document.getElementById("msg");
+function send() {
+    const text = msg.value;
+    if (!text) return;
+    chat.innerHTML += '<div class="user">' + text + '</div>';
+    msg.value = "";
+    fetch("/ask", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({prompt: text})
+    }).then(res => res.json()).then(data => {
+        chat.innerHTML += '<div class="ai">' + data.reply + '</div>';
+        chat.scrollTop = chat.scrollHeight;
+    });
+}
+msg.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+</script>
+</body>
+</html>
