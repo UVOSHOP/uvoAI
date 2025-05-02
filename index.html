@@ -30,16 +30,17 @@
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            animation: rotate 30s infinite linear;
+            animation: rotate 10s infinite linear;
             position: relative;
         }
 
         .house {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 10px;
+            height: 10px;
             background-color: #8bc34a;
             transform: translateZ(50px);
+            opacity: 0.9;
         }
 
         @keyframes rotate {
@@ -60,17 +61,17 @@
     <div id="fps"></div>
     <div id="container">
         <div class="scene">
-            <!-- 900 Houses forming a tube shape -->
+            <!-- 5000 Houses forming a tube shape -->
         </div>
     </div>
 
     <script>
         const scene = document.querySelector('.scene');
-        const numObjects = 900;
+        const numObjects = 5000;  // Increased to 5000 for higher load
         const radius = 200;  // Adjust radius to fit objects in view
         const angleIncrement = (2 * Math.PI) / numObjects;
 
-        // Generate the 900 objects arranged in a cylindrical shape
+        // Generate the 5000 objects arranged in a cylindrical shape
         for (let i = 0; i < numObjects; i++) {
             const house = document.createElement('div');
             house.classList.add('house');
