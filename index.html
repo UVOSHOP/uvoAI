@@ -581,7 +581,7 @@
         <ul id="chat-history">
             </ul>
         <a href="https://uvoshop.vercel.app/" target="_blank" id="uvoshop-button">
-            UVOSHOP<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjUtICjAMwukAPrO40Ti_R3NAN7GEPJfZr8HSvrJaAvDOARYOr8pHyyCSS6bn7Wr27UvPi6WJzA1CpMbXJfNC-ITtuN5LwGGkp3Je_9cCptqfhBxfMoPT5YLkeXy2YAfHRiX8KzttqDGeXKykz8tVMc1aiWpP79XjgbKB45e1PDZiCFBbnf1H1av7SZ-eku/s320/logo%20uvoshop%20transparan.png" alt="UVOSHOP Logo">
+            UVOSHOP<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjUtICjAMwukAPrO40Ti_R3NAN7GEPJfZr8HSvrJaAvDOARYOr8pHyyCSS6bn7Wr27UvPi6WJzA1CpMbXJfNC-ITtuN5LwGGkp3Je_9cCptqfhBxfMoPT5YLkeXy2YAfHRiX8KzttqDGeXKykz8tVMc1aiWpP79XjgbKB45e1PDZiCFkbnf1H1av7SZ-eku/s320/logo%20uvoshop%20transparan.png">
         </a>
     </div>
 
@@ -905,7 +905,7 @@
 
             // 4. Fallback jika tidak ada jawaban spesifik yang ditemukan
             lastQueryContext = { game: null, amount: null }; // Reset context for fallback
-            return `Maaf, saya belum punya jawaban untuk pertanyaan itu. Coba tanyakan dengan kata kunci yang berbeda atau silakan hubungi admin kami di WhatsApp untuk bantuan lebih lanjut.`;
+            return `Maaf, saya belum bisa menjawab pertanyaan itu,kasih saya pertanyaan lain.`;
         }
 
         async function handleUserInput() {
@@ -914,7 +914,7 @@
 
             const currentChat = conversations.find(conv => conv.id === currentConversationId);
             if (currentChat && currentChat.messages.filter(msg => msg.sender === 'user').length >= MAX_QUESTIONS_PER_CHAT) {
-                appendBubble("Anda telah mencapai batas 50 pertanyaan untuk obrolan ini. Silakan mulai obrolan baru untuk melanjutkan.", 'ai');
+                appendBubble("Anda telah mencapai batas untuk obrolan ini. Silakan mulai obrolan baru untuk melanjutkan.", 'ai');
                 disableInput();
                 return;
             }
@@ -941,7 +941,7 @@
 
             // Re-check limit after AI response
             if (currentChat && currentChat.messages.filter(msg => msg.sender === 'user').length >= MAX_QUESTIONS_PER_CHAT) {
-                appendBubble("Anda telah mencapai batas 50 pertanyaan untuk obrolan ini. Silakan mulai obrolan baru untuk melanjutkan.", 'ai');
+                appendBubble("Anda telah mencapai batas untuk obrolan ini. Silakan mulai obrolan baru untuk melanjutkan.", 'ai');
                 disableInput();
                 return;
             }
@@ -1130,8 +1130,8 @@
             renderChatHistory();
 
             if (showWelcome) {
-                appendBubble("Halo! 👋 Saya UVOchat, asisten AI Anda. Tanyakan apa saja terkait top-up game dan layanan kami.", 'ai');
-                saveMessage("Halo! 👋 Saya UVOchat, asisten AI Anda. Tanyakan apa saja terkait top-up game dan layanan kami.", 'ai');
+                appendBubble("Halo! 👋 Saya UVOchat, asisten AI Anda. Tanyakan apa saja.", 'ai');
+                saveMessage("Halo! 👋 Saya UVOchat, asisten AI Anda. Tanyakan apa saja.", 'ai');
             }
             enableInput();
         }
