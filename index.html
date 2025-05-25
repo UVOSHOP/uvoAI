@@ -126,8 +126,8 @@
             width: 100%;
             padding: 0;
             border-top: 1px solid #333;
-            flex-grow: 1; /* Biarkan menu mengisi ruang yang tersisa */
-            overflow-y: auto; /* Jika menu panjang, bisa discroll */
+            flex-shrink: 0; /* Jangan biarkan menu mengisi ruang terlalu banyak */
+            margin-top: auto; /* Dorong ke bawah */
         }
         #sidebar-menu li {
             padding: 15px 20px;
@@ -139,6 +139,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            background-color: #1f1f1f; /* Default background */
+            border-bottom: 1px solid #333;
         }
         #sidebar-menu li:hover {
             background-color: #333;
@@ -148,6 +150,34 @@
             color: black;
             font-weight: 600;
         }
+        /* Style for UVOSHOP button */
+        #uvoshop-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0ff; /* Background color of the button */
+            color: black;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 20px auto; /* Center it and give some margin */
+            width: calc(100% - 40px); /* Adjust width */
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            text-decoration: none; /* Remove underline for anchor tag */
+        }
+        #uvoshop-button:hover {
+            background-color: #00dddd;
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+        }
+        #uvoshop-button img {
+            margin-left: 8px; /* Space between text and logo */
+            width: 20px;
+            height: 20px;
+        }
+
 
         #open-sidebar-btn {
             background: transparent;
@@ -483,10 +513,12 @@
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
             z-index: 21;
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 2px; /* Small gap between buttons */
+            padding: 5px;
         }
-        #chat-history li.active .chat-options {
+        #chat-history li.show-options .chat-options { /* Use a class to show options */
             display: flex;
-            gap: 5px;
         }
         #chat-history li .chat-options button {
             background: none;
@@ -495,8 +527,10 @@
             font-size: 0.9rem;
             padding: 5px 8px;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.3s, background-color 0.3s;
             border-radius: 5px;
+            width: 100%; /* Make buttons full width in options box */
+            text-align: left;
         }
         #chat-history li .chat-options button:hover {
             color: white;
@@ -515,6 +549,7 @@
             font-weight: 600;
             transition: background-color 0.3s, transform 0.2s;
             box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+            flex-shrink: 0;
         }
         #new-chat-bar:hover {
             background-color: #00dddd;
@@ -545,9 +580,9 @@
         <div id="new-chat-bar" onclick="startNewChat()">+ Buat Obrolan Baru</div>
         <ul id="chat-history">
             </ul>
-        <ul id="sidebar-menu">
-            <li onclick="window.location.href = 'https://linktr.ee/uvoshop';" target="_blank"><span style="margin-right: 10px;"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjUtICjAMwukAPrO40Ti_R3NAN7GEPJfZr8HSvrJaAvDOARYOr8pHyyCSS6bn7Wr27UvPi6WJzA1CpMbXJfNC-ITtuN5LwGGkp3Je_9cCptqfhBxfMoPT5YLkeXy2YAfHRiX8KzttqDGeXKykz8tVMc1aiWpP79XjgbKB45e1PDZiCFkbnf1H1av7SZ-eku/s320/logo%20uvoshop%20transparan.png" alt="UVOSHOP Logo" width="20" height="20"></span>UVOSHOP</li>
-        </ul>
+        <a href="https://uvoshop.vercel.app/" target="_blank" id="uvoshop-button">
+            UVOSHOP<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjUtICjAMwukAPrO40Ti_R3NAN7GEPJfZr8HSvrJaAvDOARYOr8pHyyCSS6bn7Wr27UvPi6WJzA1CpMbXJfNC-ITtuN5LwGGkp3Je_9cCptqfhBxfMoPT5YLkeXy2YAfHRiX8KzttqDGeXKykz8tVMc1aiWpP79XjgbKB45e1PDZiCFBbnf1H1av7SZ-eku/s320/logo%20uvoshop%20transparan.png" alt="UVOSHOP Logo">
+        </a>
     </div>
 
     <div id="main-content">
@@ -575,6 +610,7 @@
         const sendBtn = document.getElementById('sendBtn');
         const chatHistoryList = document.getElementById('chat-history');
         const MAX_QUESTIONS_PER_CHAT = 50;
+        const LONG_PRESS_TIME = 700; // milliseconds for long press
 
         let aiTyping = false;
         let uvochatData = []; // Array to hold data from multiple uvochat JSONs
@@ -582,6 +618,7 @@
         let lastQueryContext = { game: null, amount: null };
         let conversations = [];
         let currentConversationId = null;
+        let pressTimer;
 
         // Fungsi untuk mengontrol Sidebar
         function openNav() {
@@ -662,9 +699,10 @@
                 if (uvochatData.length === 0) {
                     appendBubble("Maaf, saya gagal memuat data bantuan dari semua file uvochat. Silakan coba refresh halaman.", 'ai');
                     console.error("Kesalahan: Tidak ada data uvochat yang berhasil dimuat.");
-                    return; // Stop if no uvochat data is loaded
+                    // Do not return here, continue to load games.json if uvochatData is empty.
+                } else {
+                    console.log('uvochat JSONs loaded successfully. Total FAQ entries:', uvochatData.length);
                 }
-                console.log('uvochat JSONs loaded successfully. Total FAQ entries:', uvochatData.length);
 
                 // Load games.json
                 try {
@@ -683,7 +721,7 @@
                 
                 loadConversations();
                 if (conversations.length === 0) {
-                    startNewChat(false); // Start a new chat if no conversations exist
+                    startNewChat(false); // Start a new chat if no conversations exist, without initial welcome message
                 } else {
                     displayConversation(conversations[0].id); // Load the first conversation by default
                 }
@@ -691,6 +729,8 @@
             } catch (e) {
                 appendBubble("Maaf, saya gagal memuat data bantuan. Silakan coba refresh halaman. (Error: " + e.message + ")", 'ai');
                 console.error("Kesalahan saat memuat file JSON:", e);
+                // Also enable input here to allow user to try again
+                enableInput();
             }
         }
 
@@ -771,33 +811,40 @@
             const lowerText = inputText.toLowerCase();
 
             // 1. Coba cari harga game dengan KONTEKS dari pertanyaan sebelumnya
-            if (lastQueryContext.game) {
-                let game = lastQueryContext.game;
-                let foundPrices = [];
-                for (const priceObj of game.prices) {
-                    const amountKeywords = [
-                        priceObj.amount.toString(),
-                        (priceObj.amount / 1000) + 'k',
-                        numToWords(priceObj.amount)
-                    ].filter(Boolean).map(s => s.toLowerCase());
+            // Check if lastQueryContext has a game and if gamesData is loaded and valid
+            if (lastQueryContext.game && gamesData && Array.isArray(gamesData)) {
+                let game = gamesData.find(g => g.name === lastQueryContext.game.name); // Find the actual game object from loaded data
+                if (game) { // Ensure the game from context still exists in current data
+                    let foundPrices = [];
+                    for (const priceObj of game.prices) {
+                        const amountKeywords = [
+                            priceObj.amount.toString(),
+                            (priceObj.amount / 1000) + 'k',
+                            numToWords(priceObj.amount)
+                        ].filter(Boolean).map(s => s.toLowerCase());
 
-                    if (containsKeywords(lowerText, amountKeywords)) {
-                        foundPrices.push(priceObj);
+                        if (containsKeywords(lowerText, amountKeywords)) {
+                            foundPrices.push(priceObj);
+                        }
                     }
-                }
-                if (foundPrices.length > 0) {
-                    let response = `Tentu, untuk ${game.name} ${foundPrices[0].amount} ${game.unit || 'diamond'} harganya: \n`;
-                    for (const p of foundPrices) {
-                        response += `[[${p.amount} ${game.unit || 'diamond'} = Rp${p.price.toLocaleString('id-ID')}]]\n`;
+                    if (foundPrices.length > 0) {
+                        let response = `Tentu, untuk ${game.name} ${foundPrices[0].amount} ${game.unit || 'diamond'} harganya: \n`;
+                        for (const p of foundPrices) {
+                            response += `[[${p.amount} ${game.unit || 'diamond'} = Rp${p.price.toLocaleString('id-ID')}]]\n`;
+                        }
+                        response += `\nApakah ada nominal lain yang ingin Anda ketahui?`;
+                        lastQueryContext = { game: game, amount: foundPrices[0].amount }; // Update konteks
+                        return response.trim();
                     }
-                    response += `\nApakah ada nominal lain yang ingin Anda ketahui?`;
-                    lastQueryContext = { game: game, amount: foundPrices[0].amount }; // Update konteks
-                    return response.trim();
+                } else {
+                    // Game from context not found in current gamesData, reset context
+                    lastQueryContext = { game: null, amount: null };
                 }
             }
 
             // Reset konteks jika pertanyaan tidak langsung terkait atau mencari game baru
-            lastQueryContext = { game: null, amount: null };
+            // Moved this below context check to allow context to be used first
+            // lastQueryContext = { game: null, amount: null };
 
             // 2. Cari di data game (gamesData) - Prioritas Tinggi jika ada nama game
             if (gamesData && Array.isArray(gamesData)) {
@@ -827,7 +874,7 @@
                     }
 
                     if (foundPrices.length > 0) {
-                        let response = `Tentu, untuk ${matchedGame.name} ${foundPrices[0].amount} ${matchedGame.unit || 'diamond'} harganya: \n`;
+                        let response = `Tentu, untuk **${matchedGame.name}** ${foundPrices[0].amount} ${matchedGame.unit || 'diamond'} harganya: \n`;
                         for (const p of foundPrices) {
                             response += `[[${p.amount} ${matchedGame.unit || 'diamond'} = Rp${p.price.toLocaleString('id-ID')}]]\n`;
                         }
@@ -849,6 +896,7 @@
                 for (const entry of uvochatData) {
                     if (Array.isArray(entry.keywords)) {
                         if (containsKeywords(lowerText, entry.keywords)) {
+                            lastQueryContext = { game: null, amount: null }; // Reset context for FAQ answers
                             return entry.answer;
                         }
                     }
@@ -856,6 +904,7 @@
             }
 
             // 4. Fallback jika tidak ada jawaban spesifik yang ditemukan
+            lastQueryContext = { game: null, amount: null }; // Reset context for fallback
             return `Maaf, saya belum punya jawaban untuk pertanyaan itu. Coba tanyakan dengan kata kunci yang berbeda atau silakan hubungi admin kami di WhatsApp untuk bantuan lebih lanjut.`;
         }
 
@@ -882,7 +931,13 @@
             removeTyping();
             const aiResponse = getAiResponse(text);
             appendBubble(aiResponse, 'ai');
-            saveMessage(aiResponse, 'ai');
+            saveMessage(aiResponse, 'ai'); // Save AI response after getting it
+
+            // Save the current lastQueryContext with the conversation
+            if (currentChat) {
+                currentChat.lastQueryContext = lastQueryContext;
+                saveConversations();
+            }
 
             // Re-check limit after AI response
             if (currentChat && currentChat.messages.filter(msg => msg.sender === 'user').length >= MAX_QUESTIONS_PER_CHAT) {
@@ -907,6 +962,12 @@
         function loadConversations() {
             const storedConversations = localStorage.getItem('uvogpt_conversations');
             conversations = storedConversations ? JSON.parse(storedConversations) : [];
+            // Ensure lastQueryContext is loaded for each conversation
+            conversations.forEach(conv => {
+                if (!conv.lastQueryContext) {
+                    conv.lastQueryContext = { game: null, amount: null };
+                }
+            });
             renderChatHistory();
         }
 
@@ -958,29 +1019,67 @@
                                     <button onclick="renameConversation('${conv.id}', event)">Ganti Nama</button>
                                     <button onclick="deleteConversation('${conv.id}', event)">Hapus</button>
                                 </div>`;
+                
+                // Click to display conversation
                 li.addEventListener('click', (e) => {
-                    if (!e.target.closest('.chat-options')) { // Prevent click on options from triggering conversation display
+                    // Only display if not clicking on the options div or its children
+                    if (!e.target.closest('.chat-options') && !li.classList.contains('show-options')) {
                         displayConversation(conv.id);
                     }
                 });
+
+                // Right-click (contextmenu) for desktop
                 li.addEventListener('contextmenu', (e) => {
                     e.preventDefault(); // Prevent default right-click menu
-                    document.querySelectorAll('#chat-history li').forEach(item => item.classList.remove('active'));
-                    li.classList.add('active'); // Highlight the selected chat
-                    // Show options for this specific list item
-                    const optionsDiv = li.querySelector('.chat-options');
-                    if (optionsDiv) optionsDiv.style.display = 'flex';
+                    showChatOptions(li);
                 });
+
+                // Long press for touch devices
+                let touchStartTimer;
+                li.addEventListener('touchstart', (e) => {
+                    e.stopPropagation(); // Prevent scroll issues
+                    touchStartTimer = setTimeout(() => {
+                        showChatOptions(li);
+                    }, LONG_PRESS_TIME);
+                }, { passive: true }); // Use passive listener for better scroll performance
+
+                li.addEventListener('touchend', () => {
+                    clearTimeout(touchStartTimer);
+                });
+                li.addEventListener('touchmove', () => {
+                    clearTimeout(touchStartTimer);
+                });
+
                 chatHistoryList.appendChild(li);
             });
 
             // Hide all options when clicking anywhere else
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('#chat-history li')) {
-                    document.querySelectorAll('#chat-history li .chat-options').forEach(optionsDiv => optionsDiv.style.display = 'none');
+                    document.querySelectorAll('#chat-history li').forEach(item => item.classList.remove('show-options', 'active'));
+                    // Ensure active class for current conversation is maintained if it's not the clicked item
+                    if (currentConversationId) {
+                         const currentActiveLi = chatHistoryList.querySelector(`[data-id="${currentConversationId}"]`);
+                         if (currentActiveLi) {
+                             currentActiveLi.classList.add('active');
+                         }
+                    }
                 }
             });
         }
+
+        function showChatOptions(listItem) {
+            // Hide all other options first
+            document.querySelectorAll('#chat-history li').forEach(item => {
+                if (item !== listItem) {
+                    item.classList.remove('show-options', 'active');
+                }
+            });
+            // Toggle options for the clicked/long-pressed item
+            listItem.classList.toggle('show-options');
+            listItem.classList.add('active'); // Keep it active when options are shown
+        }
+
 
         function renameConversation(id, event) {
             event.stopPropagation(); // Prevent displaying the chat
@@ -991,15 +1090,10 @@
                     conversation.name = newName.trim();
                     saveConversations();
                     renderChatHistory();
-                    if (currentConversationId === id) {
-                        // Update header if current chat is renamed
-                        // This part needs adjustment based on how header text is set
-                        // For now, it only updates the sidebar.
-                    }
                 }
             }
             // Hide options after action
-            document.querySelectorAll('#chat-history li .chat-options').forEach(optionsDiv => optionsDiv.style.display = 'none');
+            document.querySelectorAll('#chat-history li').forEach(item => item.classList.remove('show-options'));
         }
 
         function deleteConversation(id, event) {
@@ -1009,13 +1103,13 @@
                 saveConversations();
                 if (currentConversationId === id) {
                     // If the deleted conversation was active, start a new one
-                    startNewChat();
+                    startNewChat(false); // Do not show welcome message for a new chat replacing a deleted one
                 } else {
                     renderChatHistory();
                 }
             }
             // Hide options after action
-            document.querySelectorAll('#chat-history li .chat-options').forEach(optionsDiv => optionsDiv.style.display = 'none');
+            document.querySelectorAll('#chat-history li').forEach(item => item.classList.remove('show-options'));
         }
 
         // Fungsi untuk memulai chat baru (mengosongkan chat)
